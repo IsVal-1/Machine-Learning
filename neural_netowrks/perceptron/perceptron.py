@@ -11,6 +11,7 @@ x_lower = -200
 y_upper = 200
 y_lower = -200
 win = GraphWin(width = width, height = height, autoflush=False)
+num_pts = 500
 pts = []
 slope = -2
 y_int = 100
@@ -50,9 +51,9 @@ class Coordinate(object):
     def __str__(self):
         return "(%d, %d)"%(self.x, self.y)
     def pixel_x(self):
-        return map_to(self.x, -1, 1, -200, 200)
+        return map_to(self.x, -1, 1, x_lower, x_upper)
     def pixel_y(self):
-        return map_to(self.y, -1, 1, -200, 200)
+        return map_to(self.y, -1, 1, y_lower, y_upper)
 
 class Perceptron(object):
     num_weights = 3
@@ -61,7 +62,6 @@ class Perceptron(object):
         self.weights = []
         for i in range(self.num_weights):
             self.weights.append(random.uniform(-1, 1))
-        print('init weights='+str(self.weights))
     def guess(self, inputs):
         sum = 0
         for i in range(self.num_weights):
@@ -77,11 +77,14 @@ class Perceptron(object):
         for i in range(self.num_weights):
             self.weights[i] += error * inputs[i]*self.lr
     def guessY(self, x):
-        return -(self.weights[2]/self.weights[1]) - (self.weights[0]/self.weights[1])*x
+        w0 = self.weights[0]
+        w1 = self.weights[1]
+        w2 = self.weights[2]
+        return -(w2/w1) - (w0/w1)*x
 def setup():
     create_window()
     win.getMouse()
-    for i in range(500):
+    for i in range(num_pts):
         coord = Coordinate()
         coord.draw()
         pts.append(coord)
